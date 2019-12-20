@@ -31,9 +31,10 @@ class _VisitorListState extends State<VisitorList> {
   void initState() {
     super.initState();
     visitorModel = Visitor();
-    appModel.getVisitorsList();
 
-    tempDate = ValueNotifier<DateTime>(today); // add and subtract to temp date
+    tempDate = ValueNotifier<DateTime>(
+        today); // add and subtract to temp date, use to query list
+    appModel.getVisitorsListDate();
   }
 
   @override
@@ -44,15 +45,17 @@ class _VisitorListState extends State<VisitorList> {
       appBar: AppBar(
         title: Text(
           "Visitors List",
-          style: TextStyle(color: Colors.white,
-          fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: Column(
         children: <Widget>[
           Container(
-            width: MediaQuery.of(context).size.width,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
             margin: EdgeInsets.only(left: 10, right: 10, top: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -60,6 +63,8 @@ class _VisitorListState extends State<VisitorList> {
                 IconButton(
                   onPressed: () {
                     tempDate.value = tempDate.value.subtract(Duration(days: 1));
+                    appModel.getVisitorsListDate(
+                        date: dateFormat.format(tempDate.value).split(" ")[0]);
                   },
                   icon: Icon(
                     Icons.arrow_left,
@@ -68,21 +73,32 @@ class _VisitorListState extends State<VisitorList> {
                 ),
                 ValueListenableBuilder<DateTime>(
                   valueListenable: tempDate,
-                  builder: (context, date, widget){
-                    return Text(
-                      dateFormat.format(date).split(" ")[0].toString() == dateFormat.format(today).split(" ")[0].toString() ? "Today" : displayFormat.format(date),
-                      style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold
+                  builder: (context, date, widget) {
+                    return GestureDetector(
+                      onTap: (){
+                        _selectDate();
+                      },
+                      child: Text(
+                        dateFormat.format(date).split(" ")[0].toString() ==
+                            dateFormat.format(today).split(" ")[0].toString()
+                            ? "Today"
+                            : displayFormat.format(date),
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                     );
                   },
                 ),
                 IconButton(
                   onPressed: () {
-                    DateTime placeholder = tempDate.value; // avoid adding tempdate value while comparing
-                    if (placeholder.add(Duration(days: 1)).compareTo(today) <= 0){
+                    DateTime placeholder = tempDate
+                        .value; // avoid adding tempdate value while comparing
+                    if (placeholder.add(Duration(days: 1)).compareTo(today) <=
+                        0) {
                       tempDate.value = tempDate.value.add(Duration(days: 1));
+                      appModel.getVisitorsListDate(
+                          date: dateFormat.format(tempDate.value).split(
+                              " ")[0]);
                     }
                   },
                   icon: Icon(
@@ -121,22 +137,96 @@ class _VisitorListState extends State<VisitorList> {
       model: appModel,
       child: ScopedModelDescendant<AppModel>(
         builder: (context, child, model) {
+//          return FutureBuilder<List<Visitor>>(
+//            future: model.getVisitorsList(),
+//            builder: (context, visitorList) {
+//              if (visitorList.hasData) {
+//                if (visitorList.data.isEmpty) {
+//                  return Center(
+//                    child: Text(
+//                      'No entries available',
+//                      style: TextStyle(fontSize: 18.0),
+//                    ),
+//                  );
+//                } else {
+//                  debugPrint(
+//                      "visitor_list.dart: ${visitorList.data[0].time_in}");
+//                  return ListView.builder(
+//                    itemCount: visitorList.data.length,
+//                    itemBuilder: (context, index) {
+//                      return Card(
+//                        elevation: 4.0,
+//                        color: Colors.white,
+//                        child: ListTile(
+//                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
+//                          leading: Icon(
+//                            Icons.person_outline,
+//                            color: Theme.of(context).primaryColor,
+//                            size: 40.0,
+//                          ),
+//                          title: Text(visitorList.data[index].visitor_name),
+////                          subtitle: Text(visitorList.data[index].time_in_clock),
+//                          subtitle: Row(
+//                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                            children: <Widget>[
+//                              Text(
+//                                  "Time in: ${visitorList.data[index].time_in}"),
+////                              SizedBox(
+////                                width: MediaQuery.of(context).size.width * 0.1,
+////                              ),
+//                              visitorList.data[index].time_out != "" ? Text(
+//                                "Time out: ${visitorList.data[index].time_out}",) : SizedBox()
+//                            ],
+//                          ),
+//                          trailing: Container(
+//                            width: MediaQuery.of(context).size.width * 0.08,
+//                            margin: EdgeInsets.zero,
+//                            decoration: BoxDecoration(
+//                                shape: BoxShape.circle,
+//                                color: _getColor(visitorList.data[index])),
+//                          ),
+//                          onTap: () {
+//                            Navigator.push(
+//                                context,
+//                                CupertinoPageRoute(
+//                                    builder: (context) => VisitorDetail(
+//                                        "Edit Visitor",
+//                                        visitorList.data[index])));
+//                          },
+//                        ),
+//                      );
+//                    },
+//                  );
+//                }
+//              } else if (visitorList.hasError) {
+//                debugPrint(
+//                    "Error: ${visitorList.error}, data: ${visitorList.data}");
+//                return Center(
+//                  child: Text("Error fetching visitors list"),
+//                );
+//              }
+//              return Center(
+//                child: CupertinoActivityIndicator(
+//                  radius: 10.0,
+//                ),
+//              );
+//            },
+//          );
+
           return FutureBuilder<List<Visitor>>(
             future: model.getVisitorsList(),
             builder: (context, visitorList) {
               if (visitorList.hasData) {
-                if (visitorList.data.isEmpty) {
+                if (model.visitorsListDate.isEmpty) {
                   return Center(
                     child: Text(
                       'No entries available',
                       style: TextStyle(fontSize: 18.0),
                     ),
                   );
-                } else {
-                  debugPrint(
-                      "visitor_list.dart: ${visitorList.data[0].time_in}");
+                } else if (model.visitorsListDate.isNotEmpty) {
                   return ListView.builder(
-                    itemCount: visitorList.data.length,
+                    itemCount: model.visitorsListDate.length,
                     itemBuilder: (context, index) {
                       return Card(
                         elevation: 4.0,
@@ -145,50 +235,58 @@ class _VisitorListState extends State<VisitorList> {
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           leading: Icon(
                             Icons.person_outline,
-                            color: Theme.of(context).primaryColor,
+                            color: Theme
+                                .of(context)
+                                .primaryColor,
                             size: 40.0,
                           ),
-                          title: Text(visitorList.data[index].visitor_name),
+                          title: Text(
+                              model.visitorsListDate[index].visitor_name),
 //                          subtitle: Text(visitorList.data[index].time_in_clock),
                           subtitle: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                  "Time in: ${visitorList.data[index].time_in}"),
+                                  "Time in: ${model.visitorsListDate[index]
+                                      .time_in}"),
 //                              SizedBox(
 //                                width: MediaQuery.of(context).size.width * 0.1,
 //                              ),
-                              visitorList.data[index].time_out != "" ? Text(
-                                "Time out: ${visitorList.data[index].time_out}",) : SizedBox()
+                              model.visitorsListDate[index].time_out != ""
+                                  ? Text(
+                                "Time out: ${model.visitorsListDate[index]
+                                    .time_out}",
+                              )
+                                  : SizedBox()
                             ],
                           ),
                           trailing: Container(
-                            width: MediaQuery.of(context).size.width * 0.08,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.08,
                             margin: EdgeInsets.zero,
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: _getColor(visitorList.data[index])),
+                                color:
+                                _getColor(model.visitorsListDate[index])),
                           ),
                           onTap: () {
                             Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                    builder: (context) => VisitorDetail(
-                                        "Edit Visitor",
-                                        visitorList.data[index])));
+                                    builder: (context) =>
+                                        VisitorDetail(
+                                            "Edit Visitor",
+                                            model.visitorsListDate[index])));
                           },
                         ),
                       );
                     },
                   );
                 }
-              } else if (visitorList.hasError) {
-                debugPrint(
-                    "Error: ${visitorList.error}, data: ${visitorList.data}");
-                return Center(
-                  child: Text("Error fetching visitors list"),
-                );
               }
+
               return Center(
                 child: CupertinoActivityIndicator(
                   radius: 10.0,
@@ -201,6 +299,24 @@ class _VisitorListState extends State<VisitorList> {
     );
   }
 
+  Future<void> _selectDate() async {
+    final DateTime selectedDate = await showDatePicker(
+        context: context,
+        initialDate: tempDate.value,
+        firstDate: tempDate.value.subtract(Duration(days: 30)),
+        lastDate: DateTime(2100),
+    selectableDayPredicate: (DateTime v) => v.compareTo(today) <= 0);
+
+    if (selectedDate != null && selectedDate != tempDate.value){
+      setState(() {
+        tempDate.value = selectedDate;
+        appModel.getVisitorsListDate(
+            date: dateFormat.format(tempDate.value).split(" ")[0]);
+      });
+    }
+
+  }
+
   Color _getColor(Visitor v) {
     if (v.time_out != '') {
       return Colors.green;
@@ -208,6 +324,4 @@ class _VisitorListState extends State<VisitorList> {
       return Colors.red;
     }
   }
-
-
 }
