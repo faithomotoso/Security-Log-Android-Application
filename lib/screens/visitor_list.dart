@@ -52,10 +52,7 @@ class _VisitorListState extends State<VisitorList> {
       body: Column(
         children: <Widget>[
           Container(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width,
+            width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(left: 10, right: 10, top: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,12 +72,15 @@ class _VisitorListState extends State<VisitorList> {
                   valueListenable: tempDate,
                   builder: (context, date, widget) {
                     return GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         _selectDate();
                       },
                       child: Text(
                         dateFormat.format(date).split(" ")[0].toString() ==
-                            dateFormat.format(today).split(" ")[0].toString()
+                                dateFormat
+                                    .format(today)
+                                    .split(" ")[0]
+                                    .toString()
                             ? "Today"
                             : displayFormat.format(date),
                         style: TextStyle(
@@ -97,8 +97,8 @@ class _VisitorListState extends State<VisitorList> {
                         0) {
                       tempDate.value = tempDate.value.add(Duration(days: 1));
                       appModel.getVisitorsListDate(
-                          date: dateFormat.format(tempDate.value).split(
-                              " ")[0]);
+                          date:
+                              dateFormat.format(tempDate.value).split(" ")[0]);
                     }
                   },
                   icon: Icon(
@@ -228,59 +228,62 @@ class _VisitorListState extends State<VisitorList> {
                   return ListView.builder(
                     itemCount: model.visitorsListDate.length,
                     itemBuilder: (context, index) {
-                      return Card(
-                        elevation: 4.0,
-                        color: Colors.white,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                          leading: Icon(
-                            Icons.person_outline,
-                            color: Theme
-                                .of(context)
-                                .primaryColor,
-                            size: 40.0,
-                          ),
-                          title: Text(
-                              model.visitorsListDate[index].visitor_name),
+                      return Dismissible(
+                        key: Key(model.visitorsListDate[index].visitor_name),
+                        child: Card(
+                          elevation: 4.0,
+                          color: Colors.white,
+                          child: ListTile(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            leading: Icon(
+                              Icons.person_outline,
+                              color: Theme.of(context).primaryColor,
+                              size: 40.0,
+                            ),
+                            title: Text(
+                                model.visitorsListDate[index].visitor_name),
 //                          subtitle: Text(visitorList.data[index].time_in_clock),
-                          subtitle: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                  "Time in: ${model.visitorsListDate[index]
-                                      .time_in}"),
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                    "Time in: ${model.visitorsListDate[index].time_in}"),
 //                              SizedBox(
 //                                width: MediaQuery.of(context).size.width * 0.1,
 //                              ),
-                              model.visitorsListDate[index].time_out != ""
-                                  ? Text(
-                                "Time out: ${model.visitorsListDate[index]
-                                    .time_out}",
-                              )
-                                  : SizedBox()
-                            ],
+                                model.visitorsListDate[index].time_out != ""
+                                    ? Text(
+                                        "Time out: ${model.visitorsListDate[index].time_out}",
+                                      )
+                                    : SizedBox()
+                              ],
+                            ),
+                            trailing: Container(
+                              width: MediaQuery.of(context).size.width * 0.08,
+                              margin: EdgeInsets.zero,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color:
+                                      _getColor(model.visitorsListDate[index])),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) => VisitorDetail(
+                                          "Edit Visitor",
+                                          model.visitorsListDate[index])));
+                            },
                           ),
-                          trailing: Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.08,
-                            margin: EdgeInsets.zero,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color:
-                                _getColor(model.visitorsListDate[index])),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                CupertinoPageRoute(
-                                    builder: (context) =>
-                                        VisitorDetail(
-                                            "Edit Visitor",
-                                            model.visitorsListDate[index])));
-                          },
                         ),
+                        onDismissed: (direction) {
+                          model.deleteVisitor(model.visitorsListDate[index]);
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("Entry deleted."),
+                            duration: Duration(milliseconds: 1300),
+                          ));
+                        },
                       );
                     },
                   );
@@ -305,16 +308,15 @@ class _VisitorListState extends State<VisitorList> {
         initialDate: tempDate.value,
         firstDate: tempDate.value.subtract(Duration(days: 30)),
         lastDate: DateTime(2100),
-    selectableDayPredicate: (DateTime v) => v.compareTo(today) <= 0);
+        selectableDayPredicate: (DateTime v) => v.compareTo(today) <= 0);
 
-    if (selectedDate != null && selectedDate != tempDate.value){
+    if (selectedDate != null && selectedDate != tempDate.value) {
       setState(() {
         tempDate.value = selectedDate;
         appModel.getVisitorsListDate(
             date: dateFormat.format(tempDate.value).split(" ")[0]);
       });
     }
-
   }
 
   Color _getColor(Visitor v) {

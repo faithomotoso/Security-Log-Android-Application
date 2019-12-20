@@ -49,8 +49,9 @@ class AppModel extends Model{
     return result;
   }
 
-  Future<int> _deleteVisitor(Visitor visitor) async {
+  Future<int> deleteVisitor(Visitor visitor) async {
     int result = await _dbUtil.deleteVisitor(visitor);
+    getVisitorsListDate();
     return result;
   }
 
