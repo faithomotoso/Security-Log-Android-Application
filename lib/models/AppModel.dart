@@ -27,15 +27,11 @@ class AppModel extends Model{
     await getVisitorsList();
     if (date == null){
       // on first run
-      print("Date is null");
       date = DateFormat("yyyy-MM-dd").format(DateTime.now()).toString();
     }
 
     visitorsListDate = visitorsList.where((v) => v.date == date).toList();
-    print(date);
-    print("AppModel.dart visitors list date: ${visitorsListDate}");
     notifyListeners();
-//    return visitorsListDate;
   }
 
   Future<int> _addVisitor(Visitor visitor) async {
@@ -49,15 +45,14 @@ class AppModel extends Model{
     return result;
   }
 
-  Future<int> deleteVisitor(Visitor visitor) async {
+  Future<int> deleteVisitor(Visitor visitor, {String date}) async {
     int result = await _dbUtil.deleteVisitor(visitor);
-    getVisitorsListDate();
+    getVisitorsListDate(date: date);
     return result;
   }
 
   Future<int> visitorCheckIn(Visitor visitor) async {
     // date
-//    DateFormat dateFormat = DateFormat('y-MMMM-d').add_jm();
     DateFormat dateFormat = DateFormat("yyyy-MM-dd hh:mm aa");
     String date = dateFormat.format(DateTime.now());
 
@@ -79,7 +74,6 @@ class AppModel extends Model{
   }
 
   Future<int> visitorCheckOut(Visitor visitor) async {
-//    DateFormat dateFormat = DateFormat('y-MMMM-d').add_jm();
     DateFormat dateFormat = DateFormat("yyyy-MM-dd hh:mm aa");
     String date = dateFormat.format(DateTime.now());
 

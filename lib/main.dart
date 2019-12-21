@@ -6,7 +6,6 @@ import 'screens/visitor_list.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,10 +17,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: LoginPage(),
-//      home: VisitorDetail("Add Visitor"),
-    routes: {
-        '/visitor_list': (_) => VisitorList(),
-    },
     );
   }
 }
@@ -38,7 +33,6 @@ class _LoginPageState extends State<LoginPage> {
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,17 +61,17 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
-                          controller: usernameController,
+                            controller: usernameController,
                             validator: (value) {
-                            if (value.isEmpty) {
-                              return "Please enter your username";
-                            }
-                            return null;
+                              if (value.isEmpty) {
+                                return "Please enter your username";
+                              }
+                              return null;
                             },
                             decoration: InputDecoration(
                                 labelText: 'Username',
-//                                border: OutlineInputBorder(
-//                                    borderRadius: BorderRadius.circular(15.0)
+                                labelStyle:
+                                    TextStyle(fontWeight: FontWeight.bold),
 //                                ),
                                 icon: Icon(Icons.person_outline))),
                         SizedBox(
@@ -93,8 +87,8 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           decoration: InputDecoration(
                               labelText: 'Password',
-//                              border: OutlineInputBorder(
-//                                  borderRadius: BorderRadius.circular(15.0)),
+                              labelStyle:
+                              TextStyle(fontWeight: FontWeight.bold),
                               icon: Icon(Icons.lock_outline)),
                           obscureText: true,
                         )
@@ -106,21 +100,24 @@ class _LoginPageState extends State<LoginPage> {
                       child: MaterialButton(
                         color: _color,
                         onPressed: () {
-                          if(_formKey.currentState.validate()) {
-//                            Navigator.push(context, MaterialPageRoute(builder: (context) => VisitorList()));
-//                          Navigator.pushReplacementNamed(context, '/visitor_list');
-                          Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => VisitorList()), (_) => false);
+                          if (_formKey.currentState.validate()) {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => VisitorList()),
+                                (_) => false);
                           }
                         },
                         textColor: Colors.white,
                         padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
+                          borderRadius: BorderRadius.circular(30.0),
                         ),
                         child: Center(
                           child: Text(
                             "Login",
                             textScaleFactor: 2,
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ))

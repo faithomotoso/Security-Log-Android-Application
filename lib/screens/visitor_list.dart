@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:security_logs/models/AppModel.dart';
 import 'package:security_logs/screens/visitor_detail.dart';
-import 'package:security_logs/utils/db_util.dart';
 import 'package:security_logs/models/Visitor.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -39,9 +37,8 @@ class _VisitorListState extends State<VisitorList> {
 
   @override
   Widget build(BuildContext context) {
-//    debugPrint("visitor_list.dart temp: ${tempDate.value}");
-//    debugPrint("visitor_list.dart temp formatted: ${dateFormat.format(tempDate.value)}");
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           "Visitors List",
@@ -68,26 +65,32 @@ class _VisitorListState extends State<VisitorList> {
                     color: Colors.black,
                   ),
                 ),
-                ValueListenableBuilder<DateTime>(
-                  valueListenable: tempDate,
-                  builder: (context, date, widget) {
-                    return GestureDetector(
-                      onTap: () {
-                        _selectDate();
-                      },
-                      child: Text(
-                        dateFormat.format(date).split(" ")[0].toString() ==
-                                dateFormat
-                                    .format(today)
-                                    .split(" ")[0]
-                                    .toString()
-                            ? "Today"
-                            : displayFormat.format(date),
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold),
-                      ),
-                    );
-                  },
+                Expanded(
+                  child: ValueListenableBuilder<DateTime>(
+                    valueListenable: tempDate,
+                    builder: (context, date, widget) {
+                      return GestureDetector(
+                        onTap: () {
+                          _selectDate();
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          alignment: Alignment.center,
+                          child: Text(
+                            dateFormat.format(date).split(" ")[0].toString() ==
+                                    dateFormat
+                                        .format(today)
+                                        .split(" ")[0]
+                                        .toString()
+                                ? "Today"
+                                : displayFormat.format(date),
+                            style: TextStyle(
+                                fontSize: 18.0, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 IconButton(
                   onPressed: () {
@@ -137,82 +140,6 @@ class _VisitorListState extends State<VisitorList> {
       model: appModel,
       child: ScopedModelDescendant<AppModel>(
         builder: (context, child, model) {
-//          return FutureBuilder<List<Visitor>>(
-//            future: model.getVisitorsList(),
-//            builder: (context, visitorList) {
-//              if (visitorList.hasData) {
-//                if (visitorList.data.isEmpty) {
-//                  return Center(
-//                    child: Text(
-//                      'No entries available',
-//                      style: TextStyle(fontSize: 18.0),
-//                    ),
-//                  );
-//                } else {
-//                  debugPrint(
-//                      "visitor_list.dart: ${visitorList.data[0].time_in}");
-//                  return ListView.builder(
-//                    itemCount: visitorList.data.length,
-//                    itemBuilder: (context, index) {
-//                      return Card(
-//                        elevation: 4.0,
-//                        color: Colors.white,
-//                        child: ListTile(
-//                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
-//                          leading: Icon(
-//                            Icons.person_outline,
-//                            color: Theme.of(context).primaryColor,
-//                            size: 40.0,
-//                          ),
-//                          title: Text(visitorList.data[index].visitor_name),
-////                          subtitle: Text(visitorList.data[index].time_in_clock),
-//                          subtitle: Row(
-//                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                            children: <Widget>[
-//                              Text(
-//                                  "Time in: ${visitorList.data[index].time_in}"),
-////                              SizedBox(
-////                                width: MediaQuery.of(context).size.width * 0.1,
-////                              ),
-//                              visitorList.data[index].time_out != "" ? Text(
-//                                "Time out: ${visitorList.data[index].time_out}",) : SizedBox()
-//                            ],
-//                          ),
-//                          trailing: Container(
-//                            width: MediaQuery.of(context).size.width * 0.08,
-//                            margin: EdgeInsets.zero,
-//                            decoration: BoxDecoration(
-//                                shape: BoxShape.circle,
-//                                color: _getColor(visitorList.data[index])),
-//                          ),
-//                          onTap: () {
-//                            Navigator.push(
-//                                context,
-//                                CupertinoPageRoute(
-//                                    builder: (context) => VisitorDetail(
-//                                        "Edit Visitor",
-//                                        visitorList.data[index])));
-//                          },
-//                        ),
-//                      );
-//                    },
-//                  );
-//                }
-//              } else if (visitorList.hasError) {
-//                debugPrint(
-//                    "Error: ${visitorList.error}, data: ${visitorList.data}");
-//                return Center(
-//                  child: Text("Error fetching visitors list"),
-//                );
-//              }
-//              return Center(
-//                child: CupertinoActivityIndicator(
-//                  radius: 10.0,
-//                ),
-//              );
-//            },
-//          );
-
           return FutureBuilder<List<Visitor>>(
             future: model.getVisitorsList(),
             builder: (context, visitorList) {
@@ -242,16 +169,16 @@ class _VisitorListState extends State<VisitorList> {
                               size: 40.0,
                             ),
                             title: Text(
-                                model.visitorsListDate[index].visitor_name),
-//                          subtitle: Text(visitorList.data[index].time_in_clock),
+                              model.visitorsListDate[index].visitor_name,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1),
+                            ),
                             subtitle: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Text(
                                     "Time in: ${model.visitorsListDate[index].time_in}"),
-//                              SizedBox(
-//                                width: MediaQuery.of(context).size.width * 0.1,
-//                              ),
                                 model.visitorsListDate[index].time_out != ""
                                     ? Text(
                                         "Time out: ${model.visitorsListDate[index].time_out}",
@@ -278,12 +205,29 @@ class _VisitorListState extends State<VisitorList> {
                           ),
                         ),
                         onDismissed: (direction) {
-                          model.deleteVisitor(model.visitorsListDate[index]);
+                          model.deleteVisitor(model.visitorsListDate[index],
+                              date: dateFormat
+                                  .format(tempDate.value)
+                                  .split(" ")[0]);
                           Scaffold.of(context).showSnackBar(SnackBar(
                             content: Text("Entry deleted."),
                             duration: Duration(milliseconds: 1300),
                           ));
                         },
+                        background: Container(
+                          margin: EdgeInsets.only(left: 5, right: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.delete_outline,
+                              color: Colors.white,
+                              size: 40.0,
+                            ),
+                          ),
+                        ),
                       );
                     },
                   );
@@ -302,13 +246,22 @@ class _VisitorListState extends State<VisitorList> {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    print("Dispose called");
+  }
+
   Future<void> _selectDate() async {
     final DateTime selectedDate = await showDatePicker(
         context: context,
         initialDate: tempDate.value,
-        firstDate: tempDate.value.subtract(Duration(days: 30)),
+        firstDate: tempDate.value.subtract(Duration(days: 90)),
         lastDate: DateTime(2100),
-        selectableDayPredicate: (DateTime v) => v.compareTo(today) <= 0);
+        selectableDayPredicate: (DateTime v) {
+          debugPrint("visitor_list v: $v");
+          return v.compareTo(today) <= 0;
+        });
 
     if (selectedDate != null && selectedDate != tempDate.value) {
       setState(() {

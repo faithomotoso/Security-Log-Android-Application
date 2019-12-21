@@ -37,7 +37,6 @@ class _VisitorDetailState extends State<VisitorDetail> {
 
     if (widget.title.toLowerCase() == "add visitor") {
       disableCheckIn = false;
-//      disableUpdateDetail = false;
     } else {
       disableCheckIn = true;
     }
@@ -58,9 +57,9 @@ class _VisitorDetailState extends State<VisitorDetail> {
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           widget.title,
-          style: TextStyle(color: Colors.white),
-//          textScaleFactor: 1.3,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: EdgeInsets.all(18.0),
@@ -121,12 +120,11 @@ class _VisitorDetailState extends State<VisitorDetail> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       MaterialButton(
-                        onPressed:
-                        disableCheckIn ? null : () => checkIn(),
+                        onPressed: disableCheckIn ? null : () => checkIn(),
                         color: Colors.green,
                         disabledColor: Colors.grey,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)),
+                            borderRadius: BorderRadius.circular(25.0)),
                         textColor: Colors.white,
                         child: Text(
                           "Check In",
@@ -134,12 +132,11 @@ class _VisitorDetailState extends State<VisitorDetail> {
                         ),
                       ),
                       MaterialButton(
-                        onPressed: disableUpdateDetail
-                            ? null
-                            : () => updateDetails(),
-                        color: Colors.lime,
+                        onPressed:
+                            disableUpdateDetail ? null : () => updateDetails(),
+                        color: Colors.orangeAccent,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)),
+                            borderRadius: BorderRadius.circular(25.0)),
                         textColor: Colors.white,
                         disabledColor: Colors.grey,
                         child: Text(
@@ -148,11 +145,10 @@ class _VisitorDetailState extends State<VisitorDetail> {
                         ),
                       ),
                       MaterialButton(
-                        onPressed:
-                        disableCheckOut ? null : () => checkOut(),
+                        onPressed: disableCheckOut ? null : () => checkOut(),
                         color: Colors.redAccent,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0)),
+                            borderRadius: BorderRadius.circular(25.0)),
                         textColor: Colors.white,
                         disabledColor: Colors.grey,
                         child: Text(
@@ -188,7 +184,6 @@ class _VisitorDetailState extends State<VisitorDetail> {
       if (result != 0) {
         showAlertDialog(nameController.text, "Checked in Successfully.");
         disableCheckIn = true;
-//        Navigator.pop(context);
       } else {
         showAlertDialog("Error", "Couldn't check in $nameController");
       }

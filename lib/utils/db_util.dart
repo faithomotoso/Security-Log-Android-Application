@@ -53,16 +53,6 @@ class DbUtil {
     List<Map<String, dynamic>> mapList =
         await db.query(table, orderBy: "$colTimeIn asc");
 
-//    List<Visitor> visitors = new List<Visitor>();
-//    mapList.forEach((visitor) {
-//      visitors.add(Visitor.fromMapObject(visitor));
-//    });
-
-//    db.insert(table, {'visitor_name': 'Millo', 'person_visiting': 'Mys', ''});
-//    db.delete(table);
-//    debugPrint("List visitors: ${visitors[0].visitor_name}");
-
-//    return visitors;
     return List<Visitor>.generate(mapList.length, (i) {
       return Visitor.fromMapObject(mapList[i]);
     });

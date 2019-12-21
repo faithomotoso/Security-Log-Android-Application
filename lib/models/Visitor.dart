@@ -6,8 +6,6 @@ import 'package:scoped_model/scoped_model.dart';
 class Visitor {
   static Visitor visitor;
 
-//  Visitor._createInstance();
-
   int id;
   String visitor_name;
   String person_visiting;
@@ -41,10 +39,6 @@ class Visitor {
     return time;
   }
 
-//  @override
-//  String toString() {
-//    return "${visitor.visitor_name}";
-//  }
 
   // convert database entry to a Visitor object
   Visitor.fromMapObject(Map<String, dynamic> db_result) {
